@@ -34,6 +34,12 @@ public class Tagging {
 	      return resultString;
 	}
 	
+	public static String getTagString(String sentence) {
+		sentence = getTokenizedString(sentence);
+		sentence = tagger.tagTokenizedString(sentence);
+		return sentence;
+	}
+	
 	public static void tokenize(String inputFile, String outputFile) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
 		BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));

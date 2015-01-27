@@ -72,7 +72,7 @@ public class SimpleLineMerger {
 					if (currentLine != null)
 						writer.write("\n");
 				} else {
-					currentLine.inDiaglog = true;
+					nextLine.inParagraph = true;
 					writer.write(" ");
 				}
 //				writer.write(nextLine.tokenizedLine);
