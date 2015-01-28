@@ -8,9 +8,11 @@ public class RuleBasedLineMerger extends SimpleLineMerger{
 	public static Pattern PAGE_NUM_PATTERN = Pattern.compile("^[0-9]+$");
 	public static Pattern SECTION_PATTERN  = Pattern.compile("^[0-9]+(\\s\\.)?(\\s[a-zA-Z]+)+.*");
 	public static Pattern LOWER_CASE	   = Pattern.compile("^[a-z\\(].*");
+	
 	public static String[] FORBIDDEN_TAGS   = {"CC", "DT", "EX", "IN", "MD", 
 		"PDT", "POS", "PRP", "PRP$","TO","WP$", "WP", "WRB", "WDT"};
 	public static String[] FORBIDDEN_TOKENS = {","};
+	
 	public static String biGramFile = "/home/thenghiapham/work/odesk/nlp_ocr/w2_.txt";
 	public static String triGramFile = "/home/thenghiapham/work/odesk/nlp_ocr/w3_.txt";
 	public static NGramTable biGramTable = new NGramTable(biGramFile);
@@ -20,8 +22,8 @@ public class RuleBasedLineMerger extends SimpleLineMerger{
 	
 	HashSet<String> forbiddenTagSet;
 	HashSet<String> forbiddenTokenSet;
-	public RuleBasedLineMerger(String inputFile) {
-		super(inputFile);
+	public RuleBasedLineMerger() {
+		super();
 		forbiddenTagSet = new HashSet<>();
 		forbiddenTokenSet = new HashSet<>();
 		for (String tag: FORBIDDEN_TAGS) {
@@ -70,14 +72,14 @@ public class RuleBasedLineMerger extends SimpleLineMerger{
 	public boolean merge(Line currentLine, Line nextLine) {
 		if (currentLine == null || nextLine == null) return false;
 		// can ask some weight here for the prob
-		if (nextLine.afterEmptyLine) return false;
+		if (nextLine.succeedingEmptyLineNum > 0) return false;
 		// don't take into account short lines
 		if (currentLine.length < maxCount / 2) {
 			return false;
 		} else if (goodConcatenation(currentLine, nextLine)) { 
 			return true;
 		} else {
-			if (currentLine.fullSentence) {
+			if (currentLine.endWithPunctuation()) {
 				return false;
 			} else if (hasBadEnding(currentLine)) {
 				return true;
@@ -108,13 +110,13 @@ public class RuleBasedLineMerger extends SimpleLineMerger{
 		}
 	}
 	
-	public static void main(String args[]) throws IOException {
-//		System.out.println(LOWER_CASE.matcher("(ab").matches());
-		String inFile = "/home/thenghiapham/work/odesk/nlp_ocr/imageRaw_3_1.txt";
-		String outFile = "/home/thenghiapham/work/odesk/nlp_ocr/imageSentences_3.txt";
-		RuleBasedLineMerger merger = new RuleBasedLineMerger(inFile);
-		merger.extractSentences(inFile, outFile);
-		
-	}
+//	public static void main(String args[]) throws IOException {
+////		System.out.println(LOWER_CASE.matcher("(ab").matches());
+//		String inFile = "/home/thenghiapham/work/odesk/nlp_ocr/imageRaw_3_1.txt";
+//		String outFile = "/home/thenghiapham/work/odesk/nlp_ocr/imageSentences_3.txt";
+//		RuleBasedLineMerger merger = new RuleBasedLineMerger(inFile);
+//		merger.extractSentences(inFile, outFile);
+//		
+//	}
 	
 }

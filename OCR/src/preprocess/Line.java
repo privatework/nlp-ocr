@@ -1,12 +1,16 @@
 package preprocess;
 
+import java.util.regex.Pattern;
+
 public class Line {
-	boolean beforeEmptyLine;
-	boolean afterEmptyLine;
+	public static Pattern START_WITH_LOWER_CASE	       = Pattern.compile("^[a-z\\(].*");
+	public static Pattern START_WITH_UPPER_CASE_WORD   = Pattern.compile("^[A-Za-z]+ .*");
+	
+	int succeedingEmptyLineNum;
 	int length;
 	boolean hasPunctuation;
 	
-	boolean fullSentence;
+//	boolean fullSentence;
 	boolean inParagraph;
 	
 	String rawLine;
@@ -46,7 +50,6 @@ public class Line {
 		
 		tokenizedLine = Tagging.getTokenizedString(line);
 		hasPunctuation = tokenizedLine.contains(" . ") || tokenizedLine.endsWith(" .");
-		fullSentence = tokenizedLine.endsWith(" .");
 		
 		capitalized = isAllUpperCase(line);
 		
@@ -70,4 +73,30 @@ public class Line {
 		return taggedLine;
 	}
 	
+	public boolean hasVerbOrPronoun() {
+		if (taggedLine == null)
+			taggedLine = Tagging.getTagString(rawLine);
+		String[] taggedWords = taggedLine.split(" ");
+		for (String taggedWord: taggedWords) {
+			String[] elements = taggedWord.split("_");
+			String tag = elements[elements.length - 1];
+			if ("PRP".equals(tag) || "PRP$".equals("tag")) return true;
+			// can check verb form but there might be tagger error
+			String word = elements[0];
+			if (word.equals("is") || word.equals("are")) return true;
+		}
+		return false;
+	}
+	
+	public boolean goodStandAloneLine() {
+		return startWithCapitalizedWord() && endWithPunctuation();
+	}
+	
+	public boolean endWithPunctuation() {
+		return tokenizedLine.endsWith(" .");
+	}
+	
+	public boolean startWithCapitalizedWord() {
+		return START_WITH_UPPER_CASE_WORD.matcher(rawLine).matches();
+	}
 }
