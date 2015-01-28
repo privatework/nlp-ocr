@@ -23,12 +23,4 @@ public class SimpleLineMerger {
 		this.maxCount = maxCount;
 	}
 	
-//	public static void main(String args[]) throws IOException {
-//		//String inFile = "/home/thenghiapham/work/odesk/nlp_ocr/imageRaw_3_1.txt";
-//		String inFile = "/home/thenghiapham/work/odesk/nlp_ocr/imageRaw_3_1.txt";
-//		String outFile = "/home/thenghiapham/work/odesk/nlp_ocr/imageSentences_3.txt";
-//		SimpleLineMerger merger = new SimpleLineMerger(inFile);
-//		merger.extractSentences(inFile, outFile);
-//		
-//	}
 }

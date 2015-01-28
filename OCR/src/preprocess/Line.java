@@ -30,6 +30,19 @@ public class Line {
 	boolean capitalized;
 	String[] lastTwoTokens;
 	String[] firstTwoTokens;
+	public static boolean isAlmostAllUpperCase(CharSequence cs) {
+		int lowerCaseCount = 0;
+		if (cs == null || cs.length() == 0) {
+			return false;
+		}
+		int sz = cs.length();
+		for (int i = 0; i < sz; i++) {
+			if (Character.isLowerCase(cs.charAt(i)) == true) {
+		        lowerCaseCount++;
+			}
+		}
+		return lowerCaseCount < sz / 10.0;
+	}
 	
 	public static boolean isAllUpperCase(CharSequence cs) {
 		if (cs == null || cs.length() == 0) {
@@ -37,7 +50,7 @@ public class Line {
 		}
 		int sz = cs.length();
 		for (int i = 0; i < sz; i++) {
-			if (Character.isUpperCase(cs.charAt(i)) == false) {
+			if (Character.isLowerCase(cs.charAt(i)) == true) {
 		        return false;
 			}
 		}
@@ -80,10 +93,12 @@ public class Line {
 		for (String taggedWord: taggedWords) {
 			String[] elements = taggedWord.split("_");
 			String tag = elements[elements.length - 1];
-			if ("PRP".equals(tag) || "PRP$".equals("tag")) return true;
-			// can check verb form but there might be tagger error
 			String word = elements[0];
-			if (word.equals("is") || word.equals("are")) return true;
+			// Avoiding tagging error for I
+			if (("PRP".equals(tag) && !"i".equals(word.toLowerCase()))|| "PRP$".equals("tag")) return true;
+			// can check verb form but there might be tagger error
+			
+			if (word.equals("is") || word.equals("are") || word.equals("been")) return true;
 		}
 		return false;
 	}
@@ -99,4 +114,16 @@ public class Line {
 	public boolean startWithCapitalizedWord() {
 		return START_WITH_UPPER_CASE_WORD.matcher(rawLine).matches();
 	}
+	
+	public static void main(String args[]) {
+//		String rawString = "The liability of each Limited Partner is limited to the amount of his capital contribution plus his share of undistributed";
+		String rawString = "(Continued)";
+		Line line = new Line(rawString);
+		System.out.println(line.hasPunctuation);
+	}
+
+	
+	
+	
+	
 }
