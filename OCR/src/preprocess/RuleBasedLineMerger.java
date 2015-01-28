@@ -122,9 +122,11 @@ public class RuleBasedLineMerger extends SimpleLineMerger{
 				return true;
 			} else {
 				if (nextLine.hasPunctuation || nextLine.inParagraph || nextLine.hasVerbOrPronoun())  {
-					// next line has punctuation 
+					// if the next line has punctuation or already merge with another line -> 
+					// it's in a paragraph
+					
+					// if next line starts with lowercase, merge them 
 					if (LOWER_CASE.matcher(nextLine.rawLine).matches())
-						// lower case -> good
 						return true;
 					else {
 						if (currentLine.inParagraph || currentLine.hasVerbOrPronoun()) return true;
